@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Take this damn potato!</title>
+    </head>
+    <body>
+        <h1>Please ignore this beautiful website and take the damn potato🥔</h1>
+        <p>Please enter your own public key and take the potato from me...</p>
+        <input id="pub" placeholder="Your Public key"/>
+        <button onclick=submit()>Submit</button>
+        <p>Made with 💓 and Web 1.0(?)</p>
+    </body>
+    <script>
+        function submit(){
+            pub = document.getElementById('pub').value;
+            if(pub === ""){
+                alert("Please enter your public key!");
+                return;
+            }
+            fetch(`/${pub}`).then(async (res) => {
+
+                if(res.ok) {
+                    let j = await res.json();
+                    window.location.href = j['url'];
+                } else {
+                    let j = await res.json();
+                    alert("Error getting the 🥔: " + j['err']);
+                }
+
+            }).catch((err) => {
+                alert("Error getting the 🥔: "+ err);
+            })
+        }
+    </script>
+</html>
