@@ -9,6 +9,8 @@ dotenv.config();
 
 process.env.SECRET || (console.error("Missing Secret key in dotenv!") && process.kill(process.pid, 'SIGTERM'));
 
+const kp = stellar.Keypair.fromSecret(process.env.SECRET);
+
 var app = express();
 
 app.get('/', (req, res) => {
@@ -17,10 +19,10 @@ app.get('/', (req, res) => {
 
 app.get('/:id', async (req, res) => {
     try{
-        let resp = await axios.get(`https://stellarhotpotato.tk/generate_xdr?source=GDCZ4WDQKII2ZNEPJHXB3YJ2FAHOKFMDD3XQVBLJJH4EQ6RVXAAEKAIQ&destination=${req.params['id']}`);
+        let resp = await axios.get(`https://stellarhotpotato.tk/generate_xdr?source=${kp.publicKey()}&destination=${req.params['id']}`);
         let xdr = resp.data["xdr"];
         tx = stellar.TransactionBuilder.fromXDR(xdr, stellar.Networks.PUBLIC);
-        tx.sign(stellar.Keypair.fromSecret(process.env.SECRET));
+        tx.sign(kp);
 
         xdr = tx.toXDR();
         bxdr = base64.encode(xdr);
