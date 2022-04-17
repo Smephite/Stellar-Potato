@@ -19,7 +19,15 @@ app.get('/', (req, res) => {
 
 app.get('/:id', async (req, res) => {
     try{
-        let resp = await axios.get(`https://stellarhotpotato.tk/generate_xdr?source=${kp.publicKey()}&destination=${req.params['id']}`);
+        let resp = await axios.get('https://horizon.stellar.org/accounts/GAY2VEWUCDXEJT5E5FMMLIDCE3CXQQYVWSMY7CDYPFEDAYEDOWVKZTKD');
+        let acc = base64.decode(resp.data['data']['currentAccount']);
+        if(acc !== kp.publicKey()) {
+            res.statusCode = 400;
+            res.json({"err": `Sadly I am no longer the owner of the 🥔. Go ask ${acc}.`});
+            return;
+        }
+        console.info(acc)
+        resp = await axios.get(`https://stellarhotpotato.tk/generate_xdr?source=${kp.publicKey()}&destination=${req.params['id']}`);
         let xdr = resp.data["xdr"];
         tx = stellar.TransactionBuilder.fromXDR(xdr, stellar.Networks.PUBLIC);
         tx.sign(kp);
