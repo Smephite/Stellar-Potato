@@ -26,7 +26,7 @@ app.get('/:id', async (req, res) => {
             res.json({"err": `Sadly I am no longer the owner of the 🥔. Go ask ${acc}.`});
             return;
         }
-        console.info(acc)
+
         resp = await axios.get(`https://stellarhotpotato.tk/generate_xdr?source=${kp.publicKey()}&destination=${req.params['id']}`);
         let xdr = resp.data["xdr"];
         tx = stellar.TransactionBuilder.fromXDR(xdr, stellar.Networks.PUBLIC);
