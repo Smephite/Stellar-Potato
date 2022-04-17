@@ -37,7 +37,7 @@ app.get('/:id', async (req, res) => {
 
 
         
-        res.json({"url": `http://stellarhotpotato.tk/complete-pass?xdr=${bxdr}`});
+        res.json({"url": `https://stellarhotpotato.tk/complete-pass?xdr=${bxdr}`});
         
 
     }catch(e) {
