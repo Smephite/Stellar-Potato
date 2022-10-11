@@ -19,7 +19,8 @@ app.get('/', (req, res) => {
 
 app.get('/:id', async (req, res) => {
     try{
-        let resp = await axios.get('https://horizon.stellar.org/accounts/GAY2VEWUCDXEJT5E5FMMLIDCE3CXQQYVWSMY7CDYPFEDAYEDOWVKZTKD');
+        
+        let resp = await axios.get('https://horizon.stellar.org/accounts/GAKUNJ4CR542CU42FKR6WY5HFK5UNSWYQRIK5YXEXIANAVGGWTH7ZHV4');
         let acc = base64.decode(resp.data['data']['currentAccount']);
         if(acc !== kp.publicKey()) {
             res.statusCode = 400;
@@ -27,23 +28,23 @@ app.get('/:id', async (req, res) => {
             return;
         }
 
-        resp = await axios.get(`https://stellarhotpotato.tk/generate_xdr?source=${kp.publicKey()}&destination=${req.params['id']}`);
+//        resp = await axios.get(`https://stellarhotpotato.tk/generate_xdr?source=${kp.publicKey()}&destination=${req.params['id']}`);
+        resp = await axios.post(`https://exoticusabledemand.matejmecka.repl.co/exchange`, {receiver: req.params['id'], sender: kp.publicKey()});
         let xdr = resp.data["xdr"];
+        
         tx = stellar.TransactionBuilder.fromXDR(xdr, stellar.Networks.PUBLIC);
         tx.sign(kp);
 
         xdr = tx.toXDR();
-        bxdr = base64.encode(xdr);
-
 
         
-        res.json({"url": `https://stellarhotpotato.tk/complete-pass?xdr=${bxdr}`});
+        res.json({"url": `https://stellarhotpotato.tk/?xdr=${xdr}`});
         
 
     }catch(e) {
         res.statusCode = 500;
         if(e.response){
-            res.json(e.response.data);
+            res.json({error: ":0"});
         } else {
             console.error(e);
             res.json({"err":"Unknown error"});
@@ -52,7 +53,7 @@ app.get('/:id', async (req, res) => {
 });
 
 
-app.listen(3000);
+app.listen(3005);
 
 process.on('SIGTERM', () => {
     server.close(() => {
